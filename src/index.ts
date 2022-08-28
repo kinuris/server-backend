@@ -1,7 +1,7 @@
 import express from "express"
 import path from "path"
-import { assertDirectoryThenFile } from "./custom_middleware/assertDirectoryThenFile"
-import { nameOnlyRedirect } from "./custom_middleware/nameOnlyRedirect"
+
+import { ifNameOnly } from "./custom_middleware/groups/ifNameOnly"
 
 const app = express()
 
@@ -9,7 +9,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "sites", "index", "index.html"))
 })
 
-app.get('/:name/:directory?/:file?', nameOnlyRedirect, assertDirectoryThenFile, (req, res) => {
+app.get('/:name/:directory?/:file?', ...ifNameOnly, (req, res) => {
     res.sendFile(path.join(__dirname, "sites", req.url))
 })
 
