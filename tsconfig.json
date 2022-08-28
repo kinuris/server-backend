@@ -4,6 +4,6 @@
         "noImplicitAny": true,
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
-        "esModuleInterop": false
+        "esModuleInterop": true
     }
 }
