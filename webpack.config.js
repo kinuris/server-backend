@@ -17,5 +17,8 @@ module.exports = {
             }
         ]
     },
+    resolve: {
+        extensions: [".ts", ".js", ".json"]
+    },
     plugins: [new NodePolyfillPlugin()]
 }
