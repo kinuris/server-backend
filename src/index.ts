@@ -5,6 +5,8 @@ import { ifNameOnly } from "./custom_middleware/groups/ifNameOnly"
 
 const app = express()
 
+app.use(express.static("static"))
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "sites", "index", "index.html"))
 })
