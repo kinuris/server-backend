@@ -9,7 +9,7 @@ export function assertFileExists(req: Request, res: Response, next: NextFunction
 
     if (!fs.existsSync(path.join(__dirname, "sites", name, directory, file))) {
         res.status(404)
-        res.sendFile(path.join(__dirname, "sites", "doesnotexist.html"))
+        res.sendFile(path.join(__dirname, "sites", "default", "doesnotexist.html"))
         return
     }
 
