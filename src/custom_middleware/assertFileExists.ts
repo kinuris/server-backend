@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import path from "path"
 import fs from "fs"
 
+/**
+ * @deprecated Edit server configurations instead
+*/
 export function assertFileExists(req: Request, res: Response, next: NextFunction): void {
     const name = req.params["name"]
     const directory = req.params["directory"]
