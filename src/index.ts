@@ -2,8 +2,6 @@ import express from "express"
 import expressWS from "express-ws"
 import path from "path"
 
-// adding-websocket branch
-
 import { ifNameOnly } from "./custom_middleware/groups/ifNameOnly"
 
 const appVanilla = express()
