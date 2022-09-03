@@ -17,7 +17,7 @@ app.ws('/websocket/', (ws, req) => {
         let headers = ""
 
         for (let headerName in req.headers) {
-            headers.concat(`${headerName}: ${req.headers[headerName]} \n`)
+            headers = headers.concat(`${headerName}: ${req.headers[headerName]} \n`)
         }
 
         ws.send(`Hello There, From Server. Your Message Was: ${data.toString()}, And Your IP Is: ${headers}`)
