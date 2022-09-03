@@ -14,7 +14,7 @@ app.use(express.static("static"))
 
 app.ws('/websocket/', (ws, req) => {
     ws.on('message', data => {
-        ws.send(`Hello There, From Server. Your Message Was: ${data.toString()}, And Your IP Is: ${req.ip}`)
+        ws.send(`Hello There, From Server. Your Message Was: ${data.toString()}, And Your IP Is: ${req.headers["X-Real-IP"]}`)
     })
 })
 
