@@ -20,7 +20,7 @@ app.ws('/websocket/', (ws, req) => {
             headers.concat(`${headerName}: ${req.headers[headerName]} \n`)
         }
 
-        ws.send(`Hello There, From Server. Your Message Was: ${data.toString()}, And Your IP Is: ${req.headers.origin}`)
+        ws.send(`Hello There, From Server. Your Message Was: ${data.toString()}, And Your IP Is: ${headers}`)
     })
 })
 
