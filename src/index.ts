@@ -1,11 +1,23 @@
 import express from "express"
+import expressWS from "express-ws"
 import path from "path"
+
+// adding-websocket branch
 
 import { ifNameOnly } from "./custom_middleware/groups/ifNameOnly"
 
-const app = express()
+const appVanilla = express()
+const expressWs = expressWS(appVanilla)
+const app = expressWs.app 
 
 app.use(express.static("static"))
+
+app.ws('/websocket/', (ws, req) => {
+    ws.on('message', data => {
+        
+        ws.send(`Hello There, From Server. Your Message Was: ${data.toString()}, And Your IP Is: ${req.headers["x-real-ip"]}`)
+    })
+})
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "sites", "index", "index.html"))
