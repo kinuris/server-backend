@@ -12,7 +12,6 @@ app.use(express.static("static"))
 
 app.ws('/websocket/', (ws, req) => {
     ws.on('message', data => {
-        
         ws.send(`Hello There, From Server. Your Message Was: ${data.toString()}, And Your IP Is: ${req.headers["x-real-ip"]}`)
     })
 })
@@ -21,7 +20,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "sites", "index", "index.html"))
 })
 
-app.get('/:name/:directory?/:file?', ...ifNameOnly, (req, res) => {
+app.get('/:name/:directory_or_file?/:file?', ...ifNameOnly, (req, res) => {
     res.sendFile(path.join(__dirname, "sites", req.url))
 })
 
