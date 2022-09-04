@@ -21,9 +21,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/:name/:directory_or_file?/:file?', ...ifNameOnly, (req, res) => {
-    res.sendFile(path.join(__dirname, "sites", req.url), () => {
-        res.redirect(404, "/not_found.html")
-    })
+    res.sendFile(path.join(__dirname, "sites", req.url))
 })
 
 app.listen(5500, () => {
