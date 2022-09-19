@@ -1,12 +1,28 @@
 import express from "express"
 import expressWS from "express-ws"
 import path from "path"
-
+import pg from "pg"
+import dotenv from "dotenv"
 import { ifNameOnly } from "./custom_middleware/groups/ifNameOnly"
+
+dotenv.config()
 
 const appVanilla = express()
 const expressWs = expressWS(appVanilla)
-const app = expressWs.app 
+const app = expressWs.app
+
+// To add dotenv support
+console.log(process.env.DB_NAME)
+
+const pgClient = new pg.Client({
+    user: "chris",
+    password: "chris",
+    host: "localhost",
+    port: 5432,
+    database: "test_db"
+})
+pgClient.connect()
+pgClient.query("SELECT * FROM food_menu").then(res => console.log(res.rows))
 
 app.use(express.static("static"))
 

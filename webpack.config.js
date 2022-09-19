@@ -1,5 +1,6 @@
 const path = require("path")
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+const webpack = require("webpack")
 
 module.exports = (env) => {
 
@@ -22,8 +23,15 @@ module.exports = (env) => {
             ]
         },
         resolve: {
-            extensions: [".ts", ".js", ".json"]
+            extensions: [".ts", ".js", ".json"],
+           
         },
-        plugins: [new NodePolyfillPlugin()]
+        plugins: [
+            new webpack.IgnorePlugin({
+                resourceRegExp: /^pg-native$/
+            }),
+            new NodePolyfillPlugin(),
+        ],
+
     }
 }
