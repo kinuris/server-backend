@@ -2,7 +2,7 @@ import express from "express"
 import expressWS from "express-ws"
 import path from "path"
 import pg from "pg"
-import * as dotenv from "dotenv"
+import dotenv from "dotenv"
 import { ifNameOnly } from "./custom_middleware/groups/ifNameOnly"
 
 dotenv.config({path: __dirname + "/.env"})
@@ -18,6 +18,7 @@ const pgClient = new pg.Client({
     port: 5432,
     database: process.env.DB_NAME
 })
+
 pgClient.connect()
 pgClient.query("SELECT * FROM food_menu").then(res => console.log(res.rows))
 
