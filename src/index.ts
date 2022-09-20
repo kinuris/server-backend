@@ -19,11 +19,11 @@ const pgClient = new pg.Client({
     database: process.env.DB_NAME
 })
 
-app.use(express.static("static"))
+pgClient.connect()
 
+app.use(express.static("static"))
 app.get('/fetch', async (req, res) => {
     
-    await pgClient.connect()
 
     const result = await pgClient.query("SELECT * FROM menu")
     res.json(result)
