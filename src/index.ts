@@ -14,16 +14,14 @@ const app = expressWs.app
 app.use(express.static("static"))
 
 const pgClient = new pg.Client({
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    host: process.env.DB_HOST,
+    user: "fetcher",
+    password: "fetcher",
+    host: "localhost",
     port: 5432,
-    database: process.env.DB_NAME
+    database: "menu_db"
 })
 
-await pgClient.connect(err => {
-    console.log("Error Connecting: " + err)
-})
+await pgClient.connect()
 
 // app.get('/fetch', async (req, res)=> {
 //     const result = await pgClient.query("SELECT * FROM food_menu")
