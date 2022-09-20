@@ -20,7 +20,8 @@ const pgClient = new pg.Client({
     port: 5432,
     database: process.env.DB_NAME
 })
-// pgClient.connect()
+pgClient.connect()
+
 // app.get('/fetch', async (req, res)=> {
 //     const result = await pgClient.query("SELECT * FROM food_menu")
 //     console.log(result)
