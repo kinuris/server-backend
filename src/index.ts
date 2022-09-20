@@ -15,7 +15,7 @@ app.use(express.static("static"))
 
 const pgClient = new pg.Client({
     user: "chris",
-    password: "",
+    password: "chris",
     host: "localhost",
     port: 5432,
     database: "menu_db"
