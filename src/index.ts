@@ -13,13 +13,7 @@ const app = expressWs.app
 
 app.use(express.static("static"))
 
-const pgClient = new pg.Client({
-    user: "chris",
-    password: "chris",
-    host: "localhost",
-    port: 5432,
-    database: "menu_db"
-})
+const pgClient = new pg.Client("postgres://fetcher:fetcher@localhost:5432/menu_db")
 
 await pgClient.connect()
 
