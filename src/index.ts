@@ -7,29 +7,25 @@ import { ifNameOnly } from "./custom_middleware/groups/ifNameOnly"
 
 dotenv.config({path: __dirname + "/.env"})
 
-console.log(process.env)
-
 const appVanilla = express()
 const expressWs = expressWS(appVanilla)
 const app = expressWs.app
 
-const pgClient = new pg.Client({
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    host: process.env.DB_HOST,
-    port: 5432,
-    database: process.env.DB_NAME
-})
-
-pgClient.connect()
-
 app.use(express.static("static"))
 
-app.get('/fetch', async (req, res)=> {
-    const result = await pgClient.query("SELECT * FROM food_menu")
-    console.log(result)
-    res.end()
-})
+// const pgClient = new pg.Client({
+//     user: process.env.DB_USER,
+//     password: process.env.DB_PASSWORD,
+//     host: process.env.DB_HOST,
+//     port: 5432,
+//     database: process.env.DB_NAME
+// })
+// pgClient.connect()
+// app.get('/fetch', async (req, res)=> {
+//     const result = await pgClient.query("SELECT * FROM food_menu")
+//     console.log(result)
+//     res.end()
+// })
 
 app.ws('/websocket/', (ws, req) => {
     ws.on('message', data => {
