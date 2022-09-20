@@ -7,6 +7,8 @@ import { ifNameOnly } from "./custom_middleware/groups/ifNameOnly"
 
 dotenv.config({path: __dirname + "/.env"})
 
+console.log(process.env)
+
 const appVanilla = express()
 const expressWs = expressWS(appVanilla)
 const app = expressWs.app
@@ -23,9 +25,8 @@ pgClient.connect()
 
 app.use(express.static("static"))
 app.get('/fetch', async (req, res) => {
-    
 
-    const result = await pgClient.query("SELECT * FROM menu")
+    const result = await pgClient.query("SELECT * FROM food_menu")
     res.json(result)
 })
 
