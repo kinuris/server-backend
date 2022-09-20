@@ -19,10 +19,15 @@ const pgClient = new pg.Client({
     database: process.env.DB_NAME
 })
 
-pgClient.connect()
-pgClient.query("SELECT * FROM food_menu").then(res => console.log(res.rows))
-
 app.use(express.static("static"))
+
+app.get('/fetch', async (req, res) => {
+    
+    await pgClient.connect()
+
+    const result = await pgClient.query("SELECT * FROM menu")
+    res.json(result)
+})
 
 app.ws('/websocket/', (ws, req) => {
     ws.on('message', data => {
