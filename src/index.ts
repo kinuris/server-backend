@@ -12,11 +12,17 @@ const expressWs = expressWS(appVanilla)
 const app = expressWs.app
 
 app.use(express.static("static"))
+// "postgres://fetcher:fetcher@localhost:5432/menu_db"
 
-// const pgClient = new pg.Client("postgres://chris:chris@localhost:5432/test_db")
-const pgClient = new pg.Client("postgres://fetcher:fetcher@localhost:5432/menu_db")
+// const pgClient = new pg.Client({
+//     user: process.env.DB_USER,
+//     password: process.env.DB_PASSWORD,
+//     host: process.env.DB_HOST,
+//     database: process.env.DB_NAME,
+//     port: 5432
+// })
 
-await pgClient.connect()
+// await pgClient.connect()
 
 // app.get('/fetch', async (req, res)=> {
 //     const result = await pgClient.query("SELECT * FROM food_menu")
