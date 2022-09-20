@@ -32,6 +32,8 @@ module.exports = (env) => {
             }),
             new NodePolyfillPlugin(),
         ],
-
+        experiments: {
+            topLevelAwait: true
+        }
     }
 }
