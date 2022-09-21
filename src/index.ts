@@ -25,8 +25,7 @@ await pgClient.connect()
 
 app.get('/fetch', async (req, res)=> {
     const result = await pgClient.query("SELECT * FROM menu")
-    console.log(result)
-    res.end()
+    res.json(result.rows)
 })
 
 app.ws('/websocket/', (ws, req) => {
