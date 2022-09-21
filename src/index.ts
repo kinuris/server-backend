@@ -25,7 +25,7 @@ const pgClient = new pg.Client({
 await pgClient.connect()
 
 // Change table when deploying to "menu"
-const currentTable = "food_menu"
+const currentTable = "menu"
 
 app.post('/create-item', async (req, res) => {
     try {
