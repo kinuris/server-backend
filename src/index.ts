@@ -12,6 +12,7 @@ const expressWs = expressWS(appVanilla)
 const app = expressWs.app
 
 app.use(express.static("static"))
+app.use(express.json())
 
 const pgClient = new pg.Client({
     user: process.env.DB_USER,
@@ -23,8 +24,31 @@ const pgClient = new pg.Client({
 
 await pgClient.connect()
 
+// Change table when deploying to "menu"
+const currentTable = "food_menu"
+
+app.post('/create-item', async (req, res) => {
+    try {
+        await pgClient.query(`INSERT INTO ${currentTable} (name, price) VALUES ('${req.body["name"]}', ${req.body["price"]})`)
+    } catch {
+        res.status(404).end()
+    }
+
+    res.status(200).end()
+})
+
+app.post('/delete-item', async (req, res) => {
+    try {
+        await pgClient.query(`DELETE FROM ${currentTable} WHERE name = '${req.body["name"]}'`)
+    } catch {
+        res.status(404).end()
+    }
+    
+    res.status(200).end()
+})
+
 app.get('/fetch', async (req, res)=> {
-    const result = await pgClient.query("SELECT * FROM menu")
+    const result = await pgClient.query(`SELECT * FROM ${currentTable}`)
 
     res.json({ data: result.rows })
 })
