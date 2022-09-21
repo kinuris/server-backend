@@ -24,7 +24,7 @@ const pgClient = new pg.Client({
 await pgClient.connect()
 
 app.get('/fetch', async (req, res)=> {
-    const result = await pgClient.query("SELECT * FROM food_menu")
+    const result = await pgClient.query("SELECT * FROM menu_db")
     console.log(result)
     res.end()
 })
