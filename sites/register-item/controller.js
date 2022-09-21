@@ -1,5 +1,5 @@
-const siteUrl = "https://idontknowanymore.xyz"
-
+// const siteUrl = "https://idontknowanymore.xyz"
+const siteUrl = "http://localhost:5500"
 const form = document.getElementById("register-form")
 
 form.addEventListener('submit', event => {
@@ -34,10 +34,13 @@ deleteForm.addEventListener('submit', event => {
 
 const data = document.getElementById("data")
 
-setTimeout(async () => {
+async function update() {
     const res = await fetch(siteUrl + "/fetch")
     const result = await res.json()
 
     data.innerHTML = JSON.stringify(result.data)
+}
 
-}, 1000)
+update()
+
+setInterval(update, 1000)
