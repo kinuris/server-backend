@@ -1,4 +1,6 @@
-const siteUrl = "http://localhost:5500"
+const siteUrl = "https://idontknowanymore.xyz"
+// const siteUrl = "http://localhost:5500"
+
 const form = document.getElementById("create-user")
 
 form.addEventListener("submit", event => {
