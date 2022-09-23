@@ -3,9 +3,10 @@ import expressWS from "express-ws"
 import path from "path"
 import pg from "pg"
 import dotenv from "dotenv"
+import bcrypt from "bcrypt"
 import { ifNameOnly } from "./custom_middleware/groups/ifNameOnly"
 
-dotenv.config({path: __dirname + "/.env"})
+dotenv.config({ path: __dirname + "/.env" })
 
 const appVanilla = express()
 const expressWs = expressWS(appVanilla)
