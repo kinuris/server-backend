@@ -14,6 +14,7 @@ module.exports = (env) => {
         },
         mode: env.prod ? "production" : "development" ,
         target: "node",
+        externalsPresets: { node: true },
         module: {
             rules: [
                 {
