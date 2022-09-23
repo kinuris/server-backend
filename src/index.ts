@@ -117,7 +117,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "sites", "index", "index.html"))
 })
 
-app.get('/:name/:directory_or_file?/:file?', lockName("register-item", "/"), ...ifNameOnly, (req, res) => {
+app.get('/:name/:directory_or_file?/:file?', lockName("register-item", "/login"), ...ifNameOnly, (req, res) => {
     res.sendFile(path.join(__dirname, "sites", req.url))
 })
 
