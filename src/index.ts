@@ -4,8 +4,11 @@ import path from "path"
 import pg from "pg"
 import dotenv from "dotenv"
 import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken"
 import { ifNameOnly } from "./custom_middleware/groups/ifNameOnly"
 import { validateSignup } from "./custom_middleware/validateSignup"
+import { parseAuth } from "./custom_middleware/parseAuth"
+import { lockName } from "./custom_middleware/lockName"
 
 dotenv.config({ path: __dirname + "/.env" })
 
@@ -27,7 +30,9 @@ const pgClient = new pg.Client({
 await pgClient.connect()
 
 // Change table when deploying to "menu"
-const currentTable = "food_menu"
+const currentTable = "menu"
+
+app.use(parseAuth)
 
 app.post('/signup', validateSignup, async (req, res) => {
     const username = req.body["username"]
@@ -58,16 +63,24 @@ app.post('/login', async (req, res) => {
     const result = await bcrypt.compare(req.body["password"], user.rows[0]["password"])
     
     if(result) {
+        const authToken = jwt.sign({
+            id: user.rows[0]["user_id"],
+        }, process.env.SECRET, {
+            expiresIn: 1000
+        })
+
+        res.setHeader("Set-Cookie", `auth_token=${authToken}`)
         res.status(200).send("Login successful").end()
-    } else
+    } else {
         res.status(401).send("Wrong email or password").end()
+    }
 })
 
 app.post('/create-item', async (req, res) => {
     try {
-        await pgClient.query(`INSERT INTO ${currentTable} (name, price) VALUES ('${req.body["name"]}', ${req.body["price"]})`)
-    } catch {
-        res.status(400).end()
+        await pgClient.query(`INSERT INTO ${currentTable} (name, price, img_link) VALUES ('${req.body["name"]}', ${req.body["price"]}, '')`)
+    } catch (error) {
+        res.status(400).send(error.toString()).end()
     }
 
     res.status(200).end()
@@ -84,14 +97,13 @@ app.post('/delete-item', async (req, res) => {
 })
 
 app.get('/clear-all', (_, res) => {
-    res.setHeader("Set-Cookie", "token=")
+    res.clearCookie("auth_token")
     res.end()
 })
 
 app.get('/fetch', async (req, res) => {
     const result = await pgClient.query(`SELECT * FROM ${currentTable}`)
 
-    res.setHeader("Set-Cookie", "token=DHFIOSAERJ(*e9r8203j4o2k3")
     res.json({ data: result.rows })
 })
 
@@ -105,7 +117,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "sites", "index", "index.html"))
 })
 
-app.get('/:name/:directory_or_file?/:file?', ...ifNameOnly, (req, res) => {
+app.get('/:name/:directory_or_file?/:file?', lockName("register-item", "/"), ...ifNameOnly, (req, res) => {
     res.sendFile(path.join(__dirname, "sites", req.url))
 })
 
