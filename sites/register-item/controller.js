@@ -1,6 +1,17 @@
 const siteUrl = "https://idontknowanymore.xyz"
 // const siteUrl = "http://localhost:5500"
 const form = document.getElementById("register-form")
+const logout = document.getElementById("logout")
+const urlParams = new URLSearchParams(document.location.search)
+
+logout.addEventListener('click', async () => {
+    await fetch(siteUrl + "/clear-all", {
+        method: 'POST'
+    })
+
+    alert("Logging Out")
+    document.location.replace("/login")
+})
 
 form.addEventListener('submit', event => {
     event.preventDefault()
@@ -44,3 +55,7 @@ async function update() {
 update()
 
 setInterval(update, 1000)
+
+let alertmsg
+if (alertmsg = urlParams.get("alertmsg"))
+    alert(alertmsg)
