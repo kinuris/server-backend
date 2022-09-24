@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken"
 
-export function lockName(name: string, location: string, options: RedirectOption = {}) {
+export function lockNameReversed(name: string, location: string, options: RedirectOption = {}) {
     const urlEncoded = options.alertMessage === undefined ? "" : `?alertmsg=${encodeURIComponent(options.alertMessage)}`
     const redirectLocation = location + urlEncoded
 
@@ -12,14 +12,14 @@ export function lockName(name: string, location: string, options: RedirectOption
                     jwt.verify(req.body["auth_token"], process.env.SECRET)
                 } catch (error) {
                     res.clearCookie("auth_token")
-                    res.redirect(redirectLocation)
+                    next()
                     return
                 }
-
-                next()
+                
+                res.redirect(redirectLocation)
                 return
             } else {
-                res.redirect(redirectLocation)
+                next()
                 return
             }
         }

@@ -9,6 +9,8 @@ import { ifNameOnly } from "./custom_middleware/groups/ifNameOnly"
 import { validateSignup } from "./custom_middleware/validateSignup"
 import { parseAuth } from "./custom_middleware/parseAuth"
 import { lockName } from "./custom_middleware/lockName"
+import { validateLogin } from "./custom_middleware/validateLogin"
+import { lockNameReversed } from "./custom_middleware/lockNameReversed"
 
 dotenv.config({ path: __dirname + "/.env" })
 
@@ -30,7 +32,7 @@ const pgClient = new pg.Client({
 await pgClient.connect()
 
 // Change table when deploying to "menu"
-const currentTable = "menu"
+const currentTable = process.env.MENU_TABLE_NAME
 
 app.use(parseAuth)
 
@@ -49,24 +51,24 @@ app.post('/signup', validateSignup, async (req, res) => {
         await pgClient.query(`INSERT INTO users (email, password, username, admin, profile_img_link) VALUES ('${email}', '${password}', '${username}', false, '')`)
     } catch {
         res.status(500).end()
+        return
     }
 
     res.status(200).end()
 })
 
-app.post('/login', async (req, res) => {
+app.post('/login', validateLogin, async (req, res) => {
     const user = await pgClient.query(`SELECT user_id, email, password FROM users WHERE email = '${req.body["email"]}'`)
     if(user.rowCount === 0) {
         res.status(401).send("Wrong email or password").end()
         return
     }
-    const result = await bcrypt.compare(req.body["password"], user.rows[0]["password"])
     
-    if(result) {
+    if(await bcrypt.compare(req.body["password"], user.rows[0]["password"])) {
         const authToken = jwt.sign({
             id: user.rows[0]["user_id"],
         }, process.env.SECRET, {
-            expiresIn: 1000
+            expiresIn: 3600
         })
 
         res.setHeader("Set-Cookie", `auth_token=${authToken}`)
@@ -96,7 +98,7 @@ app.post('/delete-item', async (req, res) => {
     res.status(200).end()
 })
 
-app.get('/clear-all', (_, res) => {
+app.post('/clear-all', (_, res) => {
     res.clearCookie("auth_token")
     res.end()
 })
@@ -117,7 +119,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "sites", "index", "index.html"))
 })
 
-app.get('/:name/:directory_or_file?/:file?', lockName("register-item", "/login"), ...ifNameOnly, (req, res) => {
+app.get('/:name/:directory_or_file?/:file?', 
+lockName("register-item", "/login", { alertMessage: "You are logged out" }),
+lockNameReversed("login", "/register-item", { alertMessage: "You are already logged in" }),
+lockNameReversed("signup", "/register-item"),
+ ...ifNameOnly, (req, res) => {
     res.sendFile(path.join(__dirname, "sites", req.url))
 })
 
