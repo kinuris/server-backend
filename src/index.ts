@@ -11,6 +11,7 @@ import { parseAuth } from "./custom_middleware/parseAuth"
 import { lockName } from "./custom_middleware/lockName"
 import { validateLogin } from "./custom_middleware/validateLogin"
 import { lockNameReversed } from "./custom_middleware/lockNameReversed"
+import { browserRouting } from "./custom_middleware/browserRouting"
 
 dotenv.config({ path: __dirname + "/.env" })
 
@@ -123,6 +124,7 @@ app.get('/:name/:directory_or_file?/:file?',
 lockName("register-item", "/login", { alertMessage: "You are logged out" }),
 lockNameReversed("login", "/register-item", { alertMessage: "You are already logged in" }),
 lockNameReversed("signup", "/register-item"),
+browserRouting("cookie-bite"),
  ...ifNameOnly, (req, res) => {
     res.sendFile(path.join(__dirname, "sites", req.url))
 })
