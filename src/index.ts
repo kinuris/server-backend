@@ -12,6 +12,7 @@ import { lockName } from "./custom_middleware/lockName"
 import { validateLogin } from "./custom_middleware/validateLogin"
 import { lockNameReversed } from "./custom_middleware/lockNameReversed"
 import { browserRouting } from "./custom_middleware/browserRouting"
+import { statusIfNotVerified } from "./custom_middleware/statusIfNotVerified"
 
 dotenv.config({ path: __dirname + "/.env" })
 
@@ -104,7 +105,7 @@ app.post('/clear-all', (_, res) => {
     res.end()
 })
 
-app.get('/fetch', async (req, res) => {
+app.get('/fetch', statusIfNotVerified(403), async (req, res) => {
     const result = await pgClient.query(`SELECT * FROM ${currentTable}`)
 
     res.json({ data: result.rows })
@@ -116,14 +117,12 @@ app.ws('/websocket/', (ws, req) => {
     })
 })
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, "sites", "index", "index.html"))
-})
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, "sites", "index", "index.html")))
 
 app.get('/:name/:directory_or_file?/:file?', 
 lockName("register-item", "/login", { alertMessage: "You are logged out" }),
 lockNameReversed("login", "/register-item", { alertMessage: "You are already logged in" }),
-lockNameReversed("signup", "/register-item"),
+lockNameReversed("signup", "/register-item", { alertMessage: "Must logout first"}),
 browserRouting("cookie-bite"),
  ...ifNameOnly, (req, res) => {
     res.sendFile(path.join(__dirname, "sites", req.url))
