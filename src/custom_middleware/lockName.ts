@@ -9,7 +9,8 @@ export function lockName(name: string, location: string, options: RedirectOption
         if (req.params["name"] === name) {
             if (req.body["auth_token"]) {
                 try {
-                    jwt.verify(req.body["auth_token"], process.env.SECRET)
+                    const result = jwt.verify(req.body["auth_token"], process.env.SECRET)
+                    req.body["user_id"] = (result as jwt.JwtPayload)["id"]
                 } catch (error) {
                     res.clearCookie("auth_token")
                     res.redirect(redirectLocation)
