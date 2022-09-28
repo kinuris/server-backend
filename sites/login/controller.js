@@ -31,4 +31,5 @@ let alertmsg
 
 if (alertmsg = urlParams.get("alertmsg")) {
     alert(alertmsg)
+    document.location.replace('/login')
 }

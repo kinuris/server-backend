@@ -57,5 +57,8 @@ update()
 setInterval(update, 1000)
 
 let alertmsg
-if (alertmsg = urlParams.get("alertmsg"))
+
+if (alertmsg = urlParams.get("alertmsg")) {
     alert(alertmsg)
+    document.location.replace('/register-item')
+}
