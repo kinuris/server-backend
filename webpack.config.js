@@ -1,5 +1,4 @@
-const path = require("path")
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+const NodeExternals = require("webpack-node-externals")
 const webpack = require("webpack")
 
 module.exports = (env) => {
@@ -15,6 +14,7 @@ module.exports = (env) => {
         mode: env.prod ? "production" : "development" ,
         target: "node",
         externalsPresets: { node: true },
+        externals: [NodeExternals()],
         module: {
             rules: [
                 {
@@ -31,7 +31,7 @@ module.exports = (env) => {
             new webpack.IgnorePlugin({
                 resourceRegExp: /^pg-native$/
             }),
-            new NodePolyfillPlugin(),
+            // new NodePolyfillPlugin(),
         ],
         experiments: {
             topLevelAwait: true
