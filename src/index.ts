@@ -1,10 +1,12 @@
+import "reflect-metadata"
 import express from "express"
 import expressWS from "express-ws"
 import path from "path"
-import pg from "pg"
 import dotenv from "dotenv"
-import bcrypt from "bcryptjs"
+import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import { ApolloServer } from "apollo-server-express"
+import { buildSchema } from "type-graphql"
 import { ifNameOnly } from "./custom_middleware/groups/ifNameOnly"
 import { validateSignup } from "./custom_middleware/validateSignup"
 import { parseAuth } from "./custom_middleware/parseAuth"
@@ -13,6 +15,10 @@ import { validateLogin } from "./custom_middleware/validateLogin"
 import { lockNameReversed } from "./custom_middleware/lockNameReversed"
 import { browserRouting } from "./custom_middleware/browserRouting"
 import { statusIfNotVerified } from "./custom_middleware/statusIfNotVerified"
+import { DataSource } from "typeorm"
+import { User } from "./entity/User"
+import { Food } from "./entity/Food"
+import { FoodResolver } from "./resolvers/FoodResolver"
 
 dotenv.config({ path: __dirname + "/.env" })
 
@@ -23,15 +29,22 @@ const app = expressWs.app
 app.use(express.static("static"))
 app.use(express.json())
 
-const pgClient = new pg.Client({
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
+await new DataSource({
+    type: "postgres",
     host: process.env.DB_HOST,
+    port: 5432,
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    port: 5432
-})
+    synchronize: true,
+    entities: [User, Food],
+    subscribers: [],
+    migrations: []
+}).initialize()
 
-await pgClient.connect()
+const schema = await buildSchema({
+    resolvers: [FoodResolver]
+})
 
 // Change table when deploying to "menu"
 const currentTable = process.env.MENU_TABLE_NAME
@@ -39,18 +52,36 @@ const currentTable = process.env.MENU_TABLE_NAME
 app.use(parseAuth)
 
 app.post('/signup', validateSignup, async (req, res) => {
-    const username = req.body["username"]
-    const email = req.body["email"]
-    const password = await bcrypt.hash(req.body["password"], await bcrypt.genSalt(10));
+    const user = new User()
 
-    const user = await pgClient.query(`SELECT email FROM users WHERE email = '${email}'`)
-    if (user.rowCount !== 0) {
-        res.status(401).send("User Already Exists").end()
+    user.password = await bcrypt.hash(req.body["password"], await bcrypt.genSalt(10))
+    user.username = req.body["username"]
+    user.email = req.body["email"]
+    user.admin = false
+    user.profileImageLink = ""
+
+    const duplicateEmail = await User.findOne({
+        where: {
+            email: user.email
+        }
+    })
+
+    const duplicateUsername = await User.findOne({
+        where: {
+            username: user.username
+        }
+    })
+
+    if (duplicateEmail) {
+        res.status(401).send("User With That Email Already Exists").end()
+        return
+    } else if (duplicateUsername) {
+        res.status(401).send("User With That Username Already Exists").end()
         return
     }
-    
+
     try {
-        await pgClient.query(`INSERT INTO users (email, password, username, admin, profile_img_link) VALUES ('${email}', '${password}', '${username}', false, '')`)
+        await user.save()
     } catch {
         res.status(500).end()
         return
@@ -60,15 +91,20 @@ app.post('/signup', validateSignup, async (req, res) => {
 })
 
 app.post('/login', validateLogin, async (req, res) => {
-    const user = await pgClient.query(`SELECT user_id, email, password FROM users WHERE email = '${req.body["email"]}'`)
-    if(user.rowCount === 0) {
+    const user = await User.findOne({
+        where: {
+            email: req.body["email"]
+        }
+    })
+
+    if(!user) {
         res.status(401).send("Wrong email or password").end()
         return
     }
     
-    if(await bcrypt.compare(req.body["password"], user.rows[0]["password"])) {
+    if(await bcrypt.compare(req.body["password"], user.password)) {
         const authToken = jwt.sign({
-            id: user.rows[0]["user_id"],
+            id: user.userID,
         }, process.env.SECRET, {
             expiresIn: 3600
         })
@@ -82,21 +118,16 @@ app.post('/login', validateLogin, async (req, res) => {
 
 app.post('/create-item', async (req, res) => {
     try {
-        await pgClient.query(`INSERT INTO ${currentTable} (name, price, img_link) VALUES ('${req.body["name"]}', ${req.body["price"]}, '')`)
+        const food = new Food()
+        food.name = req.body["name"]
+        food.price = req.body["price"]
+        food.imageLink = ""
+
+        await food.save()
     } catch (error) {
         res.status(400).send(error.toString()).end()
     }
 
-    res.status(200).end()
-})
-
-app.post('/delete-item', async (req, res) => {
-    try {
-        await pgClient.query(`DELETE FROM ${currentTable} WHERE name = '${req.body["name"]}'`)
-    } catch {
-        res.status(400).end()
-    }
-    
     res.status(200).end()
 })
 
@@ -106,9 +137,9 @@ app.post('/clear-all', (_, res) => {
 })
 
 app.get('/fetch', statusIfNotVerified(403), async (req, res) => {
-    const result = await pgClient.query(`SELECT * FROM ${currentTable}`)
+    const result = await Food.find()
 
-    res.json({ data: result.rows })
+    res.json({ data: result })
 })
 
 app.ws('/websocket/', (ws, req) => {
@@ -128,6 +159,16 @@ browserRouting("cookie-bite"),
     res.sendFile(path.join(__dirname, "sites", req.url))
 })
 
-app.listen(5500, () => {
+const server = new ApolloServer({
+    schema,
+    context: ({ req }) => ({
+        req,
+    })
+})
+
+await server.start()
+server.applyMiddleware({ app, path: '/api' })
+
+app.listen({ port: 5500 }, () => {
     console.log("Server is listening of port 5500")
 })
