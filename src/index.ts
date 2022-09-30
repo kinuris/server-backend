@@ -5,6 +5,7 @@ import path from "path"
 import dotenv from "dotenv"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import cors from "cors"
 import { ApolloServer } from "apollo-server-express"
 import { buildSchema } from "type-graphql"
 import { ifNameOnly } from "./custom_middleware/groups/ifNameOnly"
@@ -19,6 +20,7 @@ import { DataSource } from "typeorm"
 import { User } from "./entity/User"
 import { Food } from "./entity/Food"
 import { FoodResolver } from "./resolvers/FoodResolver"
+import { UserResolver } from "./resolvers/UserResolver"
 
 dotenv.config({ path: __dirname + "/.env" })
 
@@ -28,6 +30,7 @@ const app = expressWs.app
 
 app.use(express.static("static"))
 app.use(express.json())
+app.use(cors())
 
 await new DataSource({
     type: "postgres",
@@ -43,12 +46,8 @@ await new DataSource({
 }).initialize()
 
 const schema = await buildSchema({
-    resolvers: [FoodResolver]
+    resolvers: [FoodResolver, UserResolver]
 })
-
-// Change table when deploying to "menu"
-const currentTable = process.env.MENU_TABLE_NAME
-
 app.use(parseAuth)
 
 app.post('/signup', validateSignup, async (req, res) => {
@@ -58,7 +57,7 @@ app.post('/signup', validateSignup, async (req, res) => {
     user.username = req.body["username"]
     user.email = req.body["email"]
     user.admin = false
-    user.profileImageLink = ""
+    user.profileImageLink = req.body["profile_img_link"] ? req.body["profile_img_link"] : ""
 
     const duplicateEmail = await User.findOne({
         where: {
@@ -154,7 +153,16 @@ app.get('/:name/:directory_or_file?/:file?',
 lockName("register-item", "/login", { alertMessage: "You are logged out" }),
 lockNameReversed("login", "/register-item", { alertMessage: "You are already logged in" }),
 lockNameReversed("signup", "/register-item", { alertMessage: "Must logout first"}),
-browserRouting("cookie-bite"),
+browserRouting("cookie-bite", {
+    "/login": {
+        redirect: "/cookie-bite/",
+        onFail: false
+    },
+    "/signup": {
+        redirect: "/cookie-bite/",
+        onFail: false
+    }
+}),
  ...ifNameOnly, (req, res) => {
     res.sendFile(path.join(__dirname, "sites", req.url))
 })
