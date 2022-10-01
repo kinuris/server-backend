@@ -119,7 +119,6 @@ app.post('/create-item', async (req, res) => {
     try {
         const food = new Food()
         food.name = req.body["name"]
-        food.price = req.body["price"]
         food.imageLink = ""
 
         await food.save()

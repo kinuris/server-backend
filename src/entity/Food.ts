@@ -13,10 +13,6 @@ export class Food extends BaseEntity {
     name: string
 
     @Field()
-    @Column('int')
-    price: number
-
-    @Field()
     @Column({ name: "img_link" })
     imageLink: string
 }
