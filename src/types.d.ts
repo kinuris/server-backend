@@ -6,6 +6,7 @@ type RedirectOption = {
 type RouterOption = {
     [key: string]: {
         redirect: string,
-        onFail: boolean
+        onFail: boolean,
+        adminOnly: boolean
     }
 }

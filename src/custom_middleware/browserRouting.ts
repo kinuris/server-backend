@@ -9,7 +9,7 @@ export function browserRouting(name: string, routerOption: RouterOption = {}) {
             req.body["should_browser_route"] = true
 
             if (req.params["directory_or_file"] && !req.params["file"] && `/${req.params["directory_or_file"]}` in routesAndRedirects) {
-                const { redirect, onFail } = routesAndRedirects[`/${req.params["directory_or_file"]}`]
+                const { redirect, onFail, adminOnly } = routesAndRedirects[`/${req.params["directory_or_file"]}`]
                 
                 if (`/${req.params["directory_or_file"]}` in routesAndRedirects) {
                     if (onFail) {
@@ -17,6 +17,11 @@ export function browserRouting(name: string, routerOption: RouterOption = {}) {
                             try {
                                 const result = jwt.verify(req.body["auth_token"], process.env.SECRET)
                                 req.body["user_id"] = (result as jwt.JwtPayload)["id"]
+
+                                if (adminOnly && !(result as jwt.JwtPayload)["admin"]) {
+                                    res.redirect(redirect)
+                                    return
+                                }
                             } catch (error) {
                                 res.clearCookie("auth_token")
                                 res.redirect(redirect)
