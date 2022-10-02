@@ -5,6 +5,10 @@ import { Food } from "../entity/Food";
 export class FoodResolver {
     @Query(returns => [Food])
     async fetchAll() {
-        return await Food.find()
+        return await Food.find({
+            relations: {
+                variants: true
+            }
+        })
     }
 }

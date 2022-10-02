@@ -21,6 +21,8 @@ import { User } from "./entity/User"
 import { Food } from "./entity/Food"
 import { FoodResolver } from "./resolvers/FoodResolver"
 import { UserResolver } from "./resolvers/UserResolver"
+import { FoodVariants } from "./entity/FoodVariants"
+import { FoodVariantsResolver } from "./resolvers/FoodVariantsResolver"
 
 dotenv.config({ path: __dirname + "/.env" })
 
@@ -40,13 +42,13 @@ await new DataSource({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     synchronize: true,
-    entities: [User, Food],
+    entities: [User, Food, FoodVariants],
     subscribers: [],
     migrations: []
 }).initialize()
 
 const schema = await buildSchema({
-    resolvers: [FoodResolver, UserResolver]
+    resolvers: [FoodResolver, UserResolver, FoodVariantsResolver]
 })
 app.use(parseAuth)
 
@@ -104,6 +106,7 @@ app.post('/login', validateLogin, async (req, res) => {
     if(await bcrypt.compare(req.body["password"], user.password)) {
         const authToken = jwt.sign({
             id: user.userID,
+            admin: user.admin
         }, process.env.SECRET, {
             expiresIn: 3600
         })
@@ -155,11 +158,18 @@ lockNameReversed("signup", "/register-item", { alertMessage: "Must logout first"
 browserRouting("cookie-bite", {
     "/login": {
         redirect: "/cookie-bite/",
-        onFail: false
+        onFail: false,
+        adminOnly: false
     },
     "/signup": {
         redirect: "/cookie-bite/",
-        onFail: false
+        onFail: false,
+        adminOnly: false
+    },
+    "/manage-menu-items": {
+        redirect: "/cookie-bite/",
+        onFail: true,
+        adminOnly: true
     }
 }),
  ...ifNameOnly, (req, res) => {

@@ -1,12 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn, BaseEntity } from "typeorm"
+import { Column, Entity, PrimaryGeneratedColumn, BaseEntity, OneToMany, Relation } from "typeorm"
 import { ObjectType, Field, ID } from "type-graphql"
+import { FoodVariants } from "./FoodVariants"
 
 @ObjectType()
-@Entity({ name: "menu" })
+@Entity({ name: "items" })
 export class Food extends BaseEntity {
     @Field(() => ID)
     @PrimaryGeneratedColumn("uuid", { name: "id" })
-    userID: string
+    itemID: string
 
     @Field()
     @Column('text')
@@ -15,4 +16,8 @@ export class Food extends BaseEntity {
     @Field()
     @Column({ name: "img_link" })
     imageLink: string
+    
+    @Field(type => [FoodVariants])
+    @OneToMany(() => FoodVariants, (foodVariant) =>  foodVariant.foodID)
+    variants: Relation<FoodVariants>[]
 }
