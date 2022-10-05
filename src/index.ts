@@ -43,8 +43,7 @@ await new DataSource({
     database: process.env.DB_NAME,
     synchronize: true,
     entities: [User, Food, FoodVariants],
-    subscribers: [],
-    migrations: []
+    subscribers: []
 }).initialize()
 
 const schema = await buildSchema({
@@ -152,9 +151,6 @@ app.ws('/websocket/', (ws, req) => {
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, "sites", "index", "index.html")))
 
 app.get('/:name/:directory_or_file?/:file?', 
-lockName("register-item", "/login", { alertMessage: "You are logged out" }),
-lockNameReversed("login", "/register-item", { alertMessage: "You are already logged in" }),
-lockNameReversed("signup", "/register-item", { alertMessage: "Must logout first"}),
 browserRouting("cookie-bite", {
     "/login": {
         redirect: "/cookie-bite/",
@@ -178,8 +174,9 @@ browserRouting("cookie-bite", {
 
 const server = new ApolloServer({
     schema,
-    context: ({ req }) => ({
+    context: ({ req, res }) => ({
         req,
+        res
     })
 })
 
