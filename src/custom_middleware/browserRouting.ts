@@ -54,7 +54,7 @@ export function browserRouting(name: string, routerOption: RouterOption = {}) {
                     }
                 }
             } else if (req.params["directory_or_file"] && req.params["file"] && `/${req.params["directory_or_file"]}/${req.params["file"]}` in routesAndRedirects) {
-                const { redirect, onFail } = routesAndRedirects[`/${req.params["directory_or_file"]}/${req.params["file"]}`]
+                const { redirect, onFail, adminOnly } = routesAndRedirects[`/${req.params["directory_or_file"]}/${req.params["file"]}`]
 
                 if (`/${req.params["directory_or_file"]}/${req.params["file"]}` in routesAndRedirects) {
 
@@ -63,6 +63,11 @@ export function browserRouting(name: string, routerOption: RouterOption = {}) {
                             try {
                                 const result = jwt.verify(req.body["auth_token"], process.env.SECRET)
                                 req.body["user_id"] = (result as jwt.JwtPayload)["id"]
+
+                                if (adminOnly && !(result as jwt.JwtPayload)["admin"]) {
+                                    res.redirect(redirect)
+                                    return
+                                }
                             } catch (error) {
                                 res.clearCookie("auth_token")
                                 res.redirect(redirect)
