@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 import { Context } from "apollo-server-core";
-import { Request } from "express";
+import { Request, Response } from "express";
 import { Resolver, Query, Ctx, Arg } from "type-graphql"
 import { User } from "../entity/User";
 
@@ -29,7 +29,7 @@ export class UserResolver {
     }
 
     @Query(returns => User, { nullable: true })
-    async getUserData(@Ctx() context: Context<{ req: Request }>) {
+    async getUserData(@Ctx() context: Context<{ req: Request, res: Response }>) {
         const { req } = context
 
         if(req.body["auth_token"]) {
