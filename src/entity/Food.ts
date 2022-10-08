@@ -16,6 +16,10 @@ export class Food extends BaseEntity {
     @Field()
     @Column({ name: "img_link" })
     imageLink: string
+
+    @Field()
+    @Column({ length: 1 })
+    category: string
     
     @Field(type => [FoodVariants])
     @OneToMany(() => FoodVariants, (foodVariant) =>  foodVariant.foodID)

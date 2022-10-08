@@ -7,4 +7,7 @@ export class FoodInput {
 
     @Field(type => String)
     imageLink: string
+
+    @Field(type => String)
+    category: string
 }

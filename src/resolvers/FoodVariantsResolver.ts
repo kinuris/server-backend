@@ -13,28 +13,31 @@ export class FoodVariantsResolver {
     async registerFoodAndVariants(@Ctx() context: Context<{ req: Request, res: Response }>, @Arg('foodAndVariants') foodAndVariants: RegisterFoodAndVariants) {
         const { req } = context
 
-        if(req.body["auth_token"]) {
-            try {
-                jwt.verify(req.body["auth_token"], process.env.SECRET)
-            } catch (error) {
+        if(!process.env.DISABLE_AUTH) {
+            if(req.body["auth_token"]) {
+                try {
+                    jwt.verify(req.body["auth_token"], process.env.SECRET)
+                } catch (error) {
+                    return null
+                }
+            } else {
                 return null
             }
-        } else {
-            return null
-        }
-
-        const decodedPayload = jwt.decode(req.body["auth_token"]) as jwt.JwtPayload
-
-        if(!decodedPayload["admin"]){
-            return null
+    
+            const decodedPayload = jwt.decode(req.body["auth_token"]) as jwt.JwtPayload
+    
+            if(!decodedPayload["admin"]){
+                return null
+            }
         }
         
         const { food, variants } = foodAndVariants
-        const { name, imageLink } = food
+        const { name, imageLink, category } = food
         
         const foodItem = new Food()
         foodItem.name = name
         foodItem.imageLink = imageLink
+        foodItem.category = category
 
         await foodItem.save()
 
