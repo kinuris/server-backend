@@ -354,7 +354,7 @@ See https://reactjs.org/docs/forms.html#controlled-components`),s=i.initialPage?
                 display: flex;
                 padding: 1em 2em;
                 flex-wrap: wrap;
-                justify-content: ${s?"center":"space-between"};
+                justify-content: ${s?"center":"space-evenly"};
             
                 @media screen and (max-width: 1280px) {
                     padding: 1em;
