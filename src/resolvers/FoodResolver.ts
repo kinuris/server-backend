@@ -21,23 +21,23 @@ export class FoodResolver {
     async deleteFoods(@Ctx() ctx: Context<{ req: Request, res: Response }>, @Arg("food") foods: deleteFoods) {
         const { req } = ctx
 
-        if(!process.env.DISABLE_AUTH) {
-            if(req.body["auth_token"]) {
-                try {
-                    jwt.verify(req.body["auth_token"], process.env.SECRET)
-                } catch (error) {
-                    return null
-                }
-            } else {
-                return null
-            }
+        // if(!process.env.DISABLE_AUTH) {
+        //     if(req.body["auth_token"]) {
+        //         try {
+        //             jwt.verify(req.body["auth_token"], process.env.SECRET)
+        //         } catch (error) {
+        //             return null
+        //         }
+        //     } else {
+        //         return null
+        //     }
     
-            const decodedPayload = jwt.decode(req.body["auth_token"]) as jwt.JwtPayload
+        //     const decodedPayload = jwt.decode(req.body["auth_token"]) as jwt.JwtPayload
     
-            if(!decodedPayload["admin"]){
-                return null
-            }
-        }
+        //     if(!decodedPayload["admin"]){
+        //         return null
+        //     }
+        // }
         
         const { foods: foodsToDelete } = foods
         
