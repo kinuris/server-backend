@@ -405,113 +405,7 @@ See https://reactjs.org/docs/forms.html#controlled-components`),s=i.initialPage?
           `,children:jsx("p",{children:"Inventory"})})}function AboutUs(){return jsx("section",{css:css`
             /* height: 100%; */
             background-color: ${background2};
-          `,children:jsx("h1",{children:"About Us"})})}const REGISTER_FOOD_AND_VARIANTS=gql$1`
-    mutation RegisterFoodAndVariants($foodAndVariants: RegisterFoodAndVariants!) {
-        registerFoodAndVariants(foodAndVariants: $foodAndVariants) {
-            price
-        }
-    }
-`,FETCH_ALL=gql$1`
-    query FetchAll {
-        fetchAll {
-            itemID
-            name
-            imageLink
-            category
-            variants {
-                variantName
-                price
-            }
-        }
-    }
-`,DELETE_FOODS=gql$1`
-    mutation DeleteFoods($deleteFoods: deleteFoods!) {
-        deleteFoods(food: $deleteFoods) {
-            name
-            category
-        }
-    }
-`;function ManageMenuItems(){const[i,o]=react.exports.useState([]),[s,_]=react.exports.useState(),[j,$]=react.exports.useState([]),[_e,et]=react.exports.useState(),[tt,nt]=react.exports.useState([]),[rt]=useMutation(REGISTER_FOOD_AND_VARIANTS),[ot]=useMutation(DELETE_FOODS),{data:it,loading:at,refetch:ct}=useQuery(FETCH_ALL),ft=react.exports.useRef(null),pt=react.exports.useRef(null),ut=react.exports.useRef(null),st=react.exports.useRef(null),lt=react.exports.useRef(null);function dt(ht){localStorage.setItem("staged-foods",JSON.stringify(ht))}function mt(ht,vt){if(!vt&&ht){const wt=ht.fetchAll.map(({name:xt,category:Ot,imageLink:It,variants:Ft})=>({food:{category:Ot,imageLink:It,name:xt},variants:Ft.map(({price:Mt,variantName:$t})=>({price:Mt,name:$t}))}));$(wt)}}async function gt(){const{data:ht,loading:vt}=await ct();mt(ht,vt)}return react.exports.useEffect(()=>{mt(it,at)},[at]),react.exports.useEffect(()=>{const ht=localStorage.getItem("staged-foods"),vt=localStorage.getItem("staged-foods-index");ht&&o(JSON.parse(ht)),vt&&_(Number(vt))},[]),react.exports.useEffect(()=>{const ht=ft.current,vt=pt.current,wt=st.current,xt=lt.current,Ot=ut.current;async function It(At){if(At.preventDefault(),i.length===0){alert("Must have staged Foods");return}await Promise.all(i.map(async({food:Rt,variants:Et})=>{await rt({variables:{foodAndVariants:{food:Rt,variants:Et}}})})),await gt()}function Ft(At){At.preventDefault();const Rt=At.target,Et=Rt["food-name"].value,bt=Rt["image-link"].value,yt=xt.options[xt.selectedIndex].value,kt=[...i,{food:{imageLink:bt,name:Et,category:yt},variants:[]}];o(kt),dt(kt)}function Mt(At){At.preventDefault();const Rt=At.target,Et=Rt["variant-name"].value,bt=Number(Rt.price.value);if(s===void 0){alert("Select Existing Food");return}const yt=i[s];yt.variants.push({name:Et,price:bt});const kt=[...i.slice(0,s),{food:yt.food,variants:yt.variants},...i.slice(s+1)];o(kt),dt(kt)}async function $t(At){At.preventDefault();const Rt=tt.map(Et=>j[Et]);nt([]),await ot({variables:{deleteFoods:{foods:Rt.map(Et=>Et.food)}}}),await gt()}return ht.addEventListener("submit",Ft),vt.addEventListener("submit",Mt),wt.addEventListener("click",It),Ot.addEventListener("submit",$t),()=>{ht.removeEventListener("submit",Ft),vt.removeEventListener("submit",Mt),wt.removeEventListener("click",It),Ot.removeEventListener("submit",$t)}}),jsxs(Fragment,{children:[jsxs("div",{children:[jsx("section",{css:css`
-                    height: calc(200px);
-                    padding: 1em;
-                    margin-bottom: 20px;
-                    background-color: ${background};
-                    overflow: auto;
-                `,id:"top",children:i.map(({food:ht,variants:vt},wt)=>jsxs("div",{css:css`
-                                display: flex;
-                                place-items: center;
-                                height: 50px;
-                                background-color: ${s===wt?foreground:background};
-                                font-family: "Montserrat";
-                                border-radius: 10px;
-                                margin: 4px;
-                                padding: 4px;
-
-                                transition: all 0.2s;
-
-                                :hover {
-                                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-                                }
-
-                                * {
-                                    margin: 0 0.2em;
-                                }
-                            `,onClick:()=>{_(wt),localStorage.setItem("staged-foods-index",wt.toString())},children:[jsxs("h1",{children:[ht.name," ",ht.category]}),jsx("img",{css:css`
-                                    width: 50px;
-                                    height: 50px;
-                                    border-radius: 50%;
-                                `,src:ht.imageLink,alt:ht.name}),vt.map(xt=>jsxs("h4",{children:[xt.name," - ",xt.price]},ht.name+xt.name))]},ht.name+wt))},"display"),jsxs("section",{css:css`
-                    display: flex;
-                    justify-content: space-evenly;
-
-                    form {
-                        display: flex;
-                        flex-direction: column;
-                        width: 35%;
-                    }
-                `,id:"bottom",children:[jsxs("form",{id:"food",ref:ft,children:[jsx("input",{type:"text",name:"food-name",placeholder:"Food Name",required:!0}),jsx("input",{type:"url",name:"image-link",placeholder:"Food Image URL",required:!0}),jsxs("select",{ref:lt,id:"category-selector",name:"Select Food Category",children:[jsx("option",{value:"b",children:"Beverages"}),jsx("option",{value:"c",children:"Cookies"})]}),jsx("input",{type:"submit",value:"Stage Food"}),jsx("input",{type:"button",value:"Update Selected Food",onClick:()=>{const ht=document.querySelector("input[name='food-name']").value,vt=document.querySelector("input[name='image-link']").value,wt=document.querySelector("select[name='Select Food Category']"),xt=wt.options[wt.selectedIndex].value;if(s!==void 0){const Ot=i[s],It=ht===""?Ot.food.name:ht,Ft=vt===""?Ot.food.imageLink:vt,Mt=xt===""?Ot.food.category:xt,$t=[...i.slice(0,s),{food:{name:It,imageLink:Ft,category:Mt},variants:Ot.variants},...i.slice(s+1)];o($t),dt($t)}else alert("Select Existing Food to Delete")}}),jsx("br",{}),jsx("input",{type:"button",value:"Delete Food",onClick:()=>{if(s!==void 0&&i.length!==0){const ht=[...i.slice(0,s),...i.slice(s+1)];o(ht),dt(ht)}else alert("Select Existing Food to Delete")}}),jsx("input",{type:"button",value:"Delete All Foods",onClick:()=>{confirm("Are you sure you want to delete all staged foods?")&&(o([]),dt([]),_(0),localStorage.setItem("staged-foods-index","0"))}}),jsx("br",{}),jsx("input",{type:"button",ref:st,value:"Commit Food And Its Variants"})]}),jsxs("form",{id:"food-variants",ref:pt,children:[jsx("input",{type:"text",name:"variant-name",placeholder:"Variant Name",required:!0}),jsx("input",{type:"number",name:"price",placeholder:"Variant Price",required:!0}),jsx("input",{type:"submit",value:"Add Variant to Selected Food"}),jsx("br",{}),jsx("input",{type:"button",value:"Pop Variant",onClick:()=>{if(s!==void 0&&i.length!==0){const ht=i[s];ht.variants.pop();const vt=[...i.slice(0,s),{food:ht.food,variants:ht.variants},...i.slice(s+1)];o(vt),dt(vt)}else alert("Select Existing Food to Delete")}})]})]},"control")]},"commit"),jsxs("div",{children:[jsx("section",{css:css`
-                    height: calc(200px);
-                    padding: 1em;
-                    margin-bottom: 20px;
-                    margin-top: 20px;
-                    background-color: ${background};
-                    overflow: auto;
-                `,id:"top",children:j.map(({food:ht,variants:vt},wt)=>jsxs("div",{css:css`
-                                display: flex;
-                                place-items: center;
-                                height: 50px;
-                                background-color: ${_e===wt?foreground:background};
-                                font-family: "Montserrat";
-                                border-radius: 10px;
-                                margin: 4px;
-                                padding: 4px;
-
-                                transition: all 0.2s;
-
-                                :hover {
-                                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-                                }
-
-                                * {
-                                    margin: 0 0.2em;
-                                }
-                            `,onClick:()=>{et(wt)},children:[jsxs("h1",{children:[ht.name," ",ht.category]}),jsx("img",{css:css`
-                                    width: 50px;
-                                    height: 50px;
-                                    border-radius: 50%;
-                                    transition: all 0.2s;
-
-                                    ${tt.includes(wt)?"box-shadow: 0px 0px 10px 5px red":""}
-                                `,src:ht.imageLink,alt:ht.name}),vt.map(xt=>jsxs("h4",{children:[xt.name," - ",xt.price]},ht.name+xt.name))]},ht.name+wt))}),jsx("section",{css:css`
-                    display: flex;
-                    justify-content: space-evenly;
-
-                    form {
-                        display: flex;
-                        flex-direction: column;
-                        width: 35%;
-                    }
-                `,id:"bottom",children:jsxs("form",{ref:ut,children:[jsx("input",{type:"button",value:"Mark Food as Deleted",onClick:()=>{if(_e!==void 0&&!tt.includes(_e)){const ht=[...tt,_e];nt(ht)}}}),jsx("input",{type:"button",value:"Unmark Food as Deleted",onClick:()=>{if(_e!==void 0&&tt.includes(_e)){const ht=tt.indexOf(_e);nt([...tt.slice(0,ht),...tt.slice(ht+1)])}}}),jsx("br",{}),jsx("input",{type:"button",value:"Stage",onClick:async()=>{if(_e!==void 0){const ht=[...i,JSON.parse(JSON.stringify(j[_e]))];o(ht),dt(ht)}else alert("Must have food selected")}}),jsx("br",{}),jsx("input",{type:"button",value:"Refresh",onClick:async()=>await gt()}),jsx("input",{type:"submit",value:"Sync Changes"})]})},"control")]},"mutate")]})}function Root(){const[i,o]=react.exports.useState(!1);return jsxs("div",{css:css`
+          `,children:jsx("h1",{children:"About Us"})})}function Root(){const[i,o]=react.exports.useState(!1);return jsxs("div",{css:css`
         width: 100vw;
         height: 100vh;
 
@@ -566,7 +460,7 @@ See https://reactjs.org/docs/forms.html#controlled-components`),s=i.initialPage?
             }
           `,children:[jsxs("section",{children:[jsx("img",{css:css`
                 width: 30px;
-              `,src:searchLogo,alt:"Search"}),jsx("input",{type:"text",name:"search",placeholder:"Search"})]}),jsx(Usernav,{setLogin:o})]}),jsx(Routes,{children:jsxs(Route,{element:jsx(AnimationLayout,{}),children:[jsx(Route,{path:"/",element:jsx(Home,{})}),jsx(Route,{path:"/menu",element:jsx(Menu,{loggedIn:i})}),jsx(Route,{path:"/inventory",element:jsx(Inventory,{})}),jsx(Route,{path:"/about",element:jsx(AboutUs,{})}),jsx(Route,{path:"/manage-menu-items",element:jsx(ManageMenuItems,{})})]})})]})]})}const AnimationLayout=()=>{const{pathname:i}=useLocation();return jsx(motion.div,{style:{height:"calc(100% - 65px)"},transition:{duration:.2},initial:{opacity:0},animate:{opacity:1},exit:{opacity:0},children:jsx(Outlet,{})},i)};function Login(){const i=react.exports.useRef(null);return react.exports.useEffect(()=>{const o=i.current;async function s(_){_.preventDefault();const j=_.target,$=j.email.value,_e=j.password.value,tt=await(await fetch(URI+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:$,password:_e})})).text();tt==="Login successful"?document.location.replace("/cookie-bite/"):alert(tt)}return o.addEventListener("submit",s),()=>{o.removeEventListener("submit",s)}},[]),jsxs("div",{css:css`
+              `,src:searchLogo,alt:"Search"}),jsx("input",{type:"text",name:"search",placeholder:"Search"})]}),jsx(Usernav,{setLogin:o})]}),jsx(Routes,{children:jsxs(Route,{element:jsx(AnimationLayout,{}),children:[jsx(Route,{path:"/",element:jsx(Home,{})}),jsx(Route,{path:"/menu",element:jsx(Menu,{loggedIn:i})}),jsx(Route,{path:"/inventory",element:jsx(Inventory,{})}),jsx(Route,{path:"/about",element:jsx(AboutUs,{})})]})})]})]})}const AnimationLayout=()=>{const{pathname:i}=useLocation();return jsx(motion.div,{style:{height:"calc(100% - 65px)"},transition:{duration:.2},initial:{opacity:0},animate:{opacity:1},exit:{opacity:0},children:jsx(Outlet,{})},i)};function Login(){const i=react.exports.useRef(null);return react.exports.useEffect(()=>{const o=i.current;async function s(_){_.preventDefault();const j=_.target,$=j.email.value,_e=j.password.value,tt=await(await fetch(URI+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:$,password:_e})})).text();tt==="Login successful"?document.location.replace("/cookie-bite/"):alert(tt)}return o.addEventListener("submit",s),()=>{o.removeEventListener("submit",s)}},[]),jsxs("div",{css:css`
             height: 100vh;
             display: flex;
             place-items: center;
@@ -759,4 +653,110 @@ See https://reactjs.org/docs/forms.html#controlled-components`),s=i.initialPage?
                         font-size: 2em;
                     }   
                 }
-            `,children:[jsx("img",{src:logo,alt:"Logo"}),jsx("h1",{children:"WELCOME!"}),jsx("p",{children:"Grab your cookie with Cookie Bite"})]})]})}const URI="https://idontknowanymore.xyz",CustomRouter=createBrowserRouter([{path:"/*",element:jsx$1(Root,{})},{path:"/login",element:jsx$1(Login,{})},{path:"/signup",element:jsx$1(Signup,{})}],{basename:"/cookie-bite"}),client=new ApolloClient({uri:URI+"/api",cache:new InMemoryCache});client$1.createRoot(document.getElementById("root")).render(jsx$1(React.StrictMode,{children:jsx$1(ApolloProvider,{client,children:jsx$1(RouterProvider,{router:CustomRouter})})}))});export default wn();
+            `,children:[jsx("img",{src:logo,alt:"Logo"}),jsx("h1",{children:"WELCOME!"}),jsx("p",{children:"Grab your cookie with Cookie Bite"})]})]})}const REGISTER_FOOD_AND_VARIANTS=gql$1`
+    mutation RegisterFoodAndVariants($foodAndVariants: RegisterFoodAndVariants!) {
+        registerFoodAndVariants(foodAndVariants: $foodAndVariants) {
+            price
+        }
+    }
+`,FETCH_ALL=gql$1`
+    query FetchAll {
+        fetchAll {
+            itemID
+            name
+            imageLink
+            category
+            variants {
+                variantName
+                price
+            }
+        }
+    }
+`,DELETE_FOODS=gql$1`
+    mutation DeleteFoods($deleteFoods: deleteFoods!) {
+        deleteFoods(food: $deleteFoods) {
+            name
+            category
+        }
+    }
+`;function ManageMenuItems(){const[i,o]=react.exports.useState([]),[s,_]=react.exports.useState(),[j,$]=react.exports.useState([]),[_e,et]=react.exports.useState(),[tt,nt]=react.exports.useState([]),[rt]=useMutation(REGISTER_FOOD_AND_VARIANTS),[ot]=useMutation(DELETE_FOODS),{data:it,loading:at,refetch:ct}=useQuery(FETCH_ALL),ft=react.exports.useRef(null),pt=react.exports.useRef(null),ut=react.exports.useRef(null),st=react.exports.useRef(null),lt=react.exports.useRef(null);function dt(ht){localStorage.setItem("staged-foods",JSON.stringify(ht))}function mt(ht,vt){if(!vt&&ht){const wt=ht.fetchAll.map(({name:xt,category:Ot,imageLink:It,variants:Ft})=>({food:{category:Ot,imageLink:It,name:xt},variants:Ft.map(({price:Mt,variantName:$t})=>({price:Mt,name:$t}))}));$(wt)}}async function gt(){const{data:ht,loading:vt}=await ct();mt(ht,vt)}return react.exports.useEffect(()=>{mt(it,at)},[at]),react.exports.useEffect(()=>{const ht=localStorage.getItem("staged-foods"),vt=localStorage.getItem("staged-foods-index");ht&&o(JSON.parse(ht)),vt&&_(Number(vt))},[]),react.exports.useEffect(()=>{const ht=ft.current,vt=pt.current,wt=st.current,xt=lt.current,Ot=ut.current;async function It(At){if(At.preventDefault(),i.length===0){alert("Must have staged Foods");return}await Promise.all(i.map(async({food:Rt,variants:Et})=>{await rt({variables:{foodAndVariants:{food:Rt,variants:Et}}})})),await gt()}function Ft(At){At.preventDefault();const Rt=At.target,Et=Rt["food-name"].value,bt=Rt["image-link"].value,yt=xt.options[xt.selectedIndex].value,kt=[...i,{food:{imageLink:bt,name:Et,category:yt},variants:[]}];o(kt),dt(kt)}function Mt(At){At.preventDefault();const Rt=At.target,Et=Rt["variant-name"].value,bt=Number(Rt.price.value);if(s===void 0){alert("Select Existing Food");return}const yt=i[s];yt.variants.push({name:Et,price:bt});const kt=[...i.slice(0,s),{food:yt.food,variants:yt.variants},...i.slice(s+1)];o(kt),dt(kt)}async function $t(At){At.preventDefault();const Rt=tt.map(Et=>j[Et]);nt([]),await ot({variables:{deleteFoods:{foods:Rt.map(Et=>Et.food)}}}),await gt()}return ht.addEventListener("submit",Ft),vt.addEventListener("submit",Mt),wt.addEventListener("click",It),Ot.addEventListener("submit",$t),()=>{ht.removeEventListener("submit",Ft),vt.removeEventListener("submit",Mt),wt.removeEventListener("click",It),Ot.removeEventListener("submit",$t)}}),jsxs(Fragment,{children:[jsxs("div",{children:[jsx("section",{css:css`
+                    height: calc(200px);
+                    padding: 1em;
+                    margin-bottom: 20px;
+                    background-color: ${background};
+                    overflow: auto;
+                `,id:"top",children:i.map(({food:ht,variants:vt},wt)=>jsxs("div",{css:css`
+                                display: flex;
+                                place-items: center;
+                                height: 50px;
+                                background-color: ${s===wt?foreground:background};
+                                font-family: "Montserrat";
+                                border-radius: 10px;
+                                margin: 4px;
+                                padding: 4px;
+
+                                transition: all 0.2s;
+
+                                :hover {
+                                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+                                }
+
+                                * {
+                                    margin: 0 0.2em;
+                                }
+                            `,onClick:()=>{_(wt),localStorage.setItem("staged-foods-index",wt.toString())},children:[jsxs("h1",{children:[ht.name," ",ht.category]}),jsx("img",{css:css`
+                                    width: 50px;
+                                    height: 50px;
+                                    border-radius: 50%;
+                                `,src:ht.imageLink,alt:ht.name}),vt.map(xt=>jsxs("h4",{children:[xt.name," - ",xt.price]},ht.name+xt.name))]},ht.name+wt))},"display"),jsxs("section",{css:css`
+                    display: flex;
+                    justify-content: space-evenly;
+
+                    form {
+                        display: flex;
+                        flex-direction: column;
+                        width: 35%;
+                    }
+                `,id:"bottom",children:[jsxs("form",{id:"food",ref:ft,children:[jsx("input",{type:"text",name:"food-name",placeholder:"Food Name",required:!0}),jsx("input",{type:"url",name:"image-link",placeholder:"Food Image URL",required:!0}),jsxs("select",{ref:lt,id:"category-selector",name:"Select Food Category",children:[jsx("option",{value:"b",children:"Beverages"}),jsx("option",{value:"c",children:"Cookies"})]}),jsx("input",{type:"submit",value:"Stage Food"}),jsx("input",{type:"button",value:"Update Selected Food",onClick:()=>{const ht=document.querySelector("input[name='food-name']").value,vt=document.querySelector("input[name='image-link']").value,wt=document.querySelector("select[name='Select Food Category']"),xt=wt.options[wt.selectedIndex].value;if(s!==void 0){const Ot=i[s],It=ht===""?Ot.food.name:ht,Ft=vt===""?Ot.food.imageLink:vt,Mt=xt===""?Ot.food.category:xt,$t=[...i.slice(0,s),{food:{name:It,imageLink:Ft,category:Mt},variants:Ot.variants},...i.slice(s+1)];o($t),dt($t)}else alert("Select Existing Food to Delete")}}),jsx("br",{}),jsx("input",{type:"button",value:"Delete Food",onClick:()=>{if(s!==void 0&&i.length!==0){const ht=[...i.slice(0,s),...i.slice(s+1)];o(ht),dt(ht)}else alert("Select Existing Food to Delete")}}),jsx("input",{type:"button",value:"Delete All Foods",onClick:()=>{confirm("Are you sure you want to delete all staged foods?")&&(o([]),dt([]),_(0),localStorage.setItem("staged-foods-index","0"))}}),jsx("br",{}),jsx("input",{type:"button",ref:st,value:"Commit Food And Its Variants"})]}),jsxs("form",{id:"food-variants",ref:pt,children:[jsx("input",{type:"text",name:"variant-name",placeholder:"Variant Name",required:!0}),jsx("input",{type:"number",name:"price",placeholder:"Variant Price",required:!0}),jsx("input",{type:"submit",value:"Add Variant to Selected Food"}),jsx("br",{}),jsx("input",{type:"button",value:"Pop Variant",onClick:()=>{if(s!==void 0&&i.length!==0){const ht=i[s];ht.variants.pop();const vt=[...i.slice(0,s),{food:ht.food,variants:ht.variants},...i.slice(s+1)];o(vt),dt(vt)}else alert("Select Existing Food to Delete")}})]})]},"control")]},"commit"),jsxs("div",{children:[jsx("section",{css:css`
+                    height: calc(200px);
+                    padding: 1em;
+                    margin-bottom: 20px;
+                    margin-top: 20px;
+                    background-color: ${background};
+                    overflow: auto;
+                `,id:"top",children:j.map(({food:ht,variants:vt},wt)=>jsxs("div",{css:css`
+                                display: flex;
+                                place-items: center;
+                                height: 50px;
+                                background-color: ${_e===wt?foreground:background};
+                                font-family: "Montserrat";
+                                border-radius: 10px;
+                                margin: 4px;
+                                padding: 4px;
+
+                                transition: all 0.2s;
+
+                                :hover {
+                                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+                                }
+
+                                * {
+                                    margin: 0 0.2em;
+                                }
+                            `,onClick:()=>{et(wt)},children:[jsxs("h1",{children:[ht.name," ",ht.category]}),jsx("img",{css:css`
+                                    width: 50px;
+                                    height: 50px;
+                                    border-radius: 50%;
+                                    transition: all 0.2s;
+
+                                    ${tt.includes(wt)?"box-shadow: 0px 0px 10px 5px red":""}
+                                `,src:ht.imageLink,alt:ht.name}),vt.map(xt=>jsxs("h4",{children:[xt.name," - ",xt.price]},ht.name+xt.name))]},ht.name+wt))}),jsx("section",{css:css`
+                    display: flex;
+                    justify-content: space-evenly;
+
+                    form {
+                        display: flex;
+                        flex-direction: column;
+                        width: 35%;
+                    }
+                `,id:"bottom",children:jsxs("form",{ref:ut,children:[jsx("input",{type:"button",value:"Mark Food as Deleted",onClick:()=>{if(_e!==void 0&&!tt.includes(_e)){const ht=[...tt,_e];nt(ht)}}}),jsx("input",{type:"button",value:"Unmark Food as Deleted",onClick:()=>{if(_e!==void 0&&tt.includes(_e)){const ht=tt.indexOf(_e);nt([...tt.slice(0,ht),...tt.slice(ht+1)])}}}),jsx("br",{}),jsx("input",{type:"button",value:"Stage",onClick:async()=>{if(_e!==void 0){const ht=[...i,JSON.parse(JSON.stringify(j[_e]))];o(ht),dt(ht)}else alert("Must have food selected")}}),jsx("br",{}),jsx("input",{type:"button",value:"Refresh",onClick:async()=>await gt()}),jsx("input",{type:"submit",value:"Sync Changes"})]})},"control")]},"mutate")]})}const URI="https://idontknowanymore.xyz",CustomRouter=createBrowserRouter([{path:"/*",element:jsx$1(Root,{})},{path:"/login",element:jsx$1(Login,{})},{path:"/signup",element:jsx$1(Signup,{})},{path:"/manage-menu-items",element:jsx$1(ManageMenuItems,{})}],{basename:"/cookie-bite"}),client=new ApolloClient({uri:URI+"/api",cache:new InMemoryCache});client$1.createRoot(document.getElementById("root")).render(jsx$1(React.StrictMode,{children:jsx$1(ApolloProvider,{client,children:jsx$1(RouterProvider,{router:CustomRouter})})}))});export default wn();
