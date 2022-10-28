@@ -15,6 +15,8 @@ export class FoodResolver {
                 variants: true
             },
             order: {
+                name: "ASC",
+                category: "ASC",
                 variants: {
                     price: "ASC"
                 }
