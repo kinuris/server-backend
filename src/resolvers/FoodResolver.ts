@@ -13,6 +13,11 @@ export class FoodResolver {
         return await Food.find({
             relations: {
                 variants: true
+            },
+            order: {
+                variants: {
+                    price: "ASC"
+                }
             }
         })
     }
