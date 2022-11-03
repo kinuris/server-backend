@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken"
 
 @Resolver(Food)
 export class FoodResolver {
-    @Query(returns => [Food])
+    @Query(returns => [Food], { name: 'fetchAll' })
     async fetchAll() {
         return await Food.find({
             relations: {
@@ -24,7 +24,7 @@ export class FoodResolver {
         })
     }
 
-    @Mutation(returns => [Food], { nullable: true })
+    @Mutation(returns => [Food], { nullable: true, name: 'deleteFoods' })
     async deleteFoods(@Ctx() ctx: Context<{ req: Request, res: Response }>, @Arg("food") foods: deleteFoods) {
         const { req } = ctx
 

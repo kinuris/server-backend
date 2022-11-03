@@ -28,6 +28,7 @@ const app = expressWs.app
 app.use(express.static("static"))
 app.use(express.json())
 app.use(cors())
+app.use(parseAuth)
 
 await new DataSource({
     type: "postgres",
@@ -44,7 +45,6 @@ await new DataSource({
 const schema = await buildSchema({
     resolvers: [FoodResolver, UserResolver, FoodVariantsResolver]
 })
-app.use(parseAuth)
 
 app.post('/signup', signup)
 app.post('/login', login)

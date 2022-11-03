@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken"
 
 @Resolver(FoodVariants)
 export class FoodVariantsResolver {
-    @Mutation(returns => [FoodVariants], { nullable: true })
+    @Mutation(returns => [FoodVariants], { nullable: true, name: 'registerFoodAndVariants' })
     async registerFoodAndVariants(@Ctx() context: Context<{ req: Request, res: Response }>, @Arg('foodAndVariants') foodAndVariants: RegisterFoodAndVariants) {
         const { req } = context
 
@@ -52,7 +52,7 @@ export class FoodVariantsResolver {
         }))
     }
 
-    @Query(returns => [FoodVariants])
+    @Query(returns => [FoodVariants], { name: 'fetchAllVariants' })
     async fetchAllVariants() {
         return await FoodVariants.find({
             relations: {

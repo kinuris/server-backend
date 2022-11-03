@@ -5,23 +5,23 @@ import { FoodVariants } from "./FoodVariants"
 @ObjectType()
 @Entity({ name: "items" })
 export class Food extends BaseEntity {
-    @Field(() => ID)
+    @Field(() => ID, { name: 'itemID' })
     @PrimaryGeneratedColumn("uuid", { name: "id" })
     itemID: string
 
-    @Field()
-    @Column('text')
+    @Field({ name: 'name' })
+    @Column('text', { name: 'name' })
     name: string
 
-    @Field()
-    @Column({ name: "img_link" })
+    @Field({ name: 'imageLink' })
+    @Column({ name: 'img_link' })
     imageLink: string
 
-    @Field()
-    @Column({ length: 1 })
+    @Field({ name: 'category' })
+    @Column({ length: 1, name: 'category' })
     category: string
     
-    @Field(type => [FoodVariants])
+    @Field(type => [FoodVariants], { name: 'variants' })
     @OneToMany(() => FoodVariants, (foodVariant) =>  foodVariant.foodID)
     variants: Relation<FoodVariants>[]
 }

@@ -4,9 +4,9 @@ import { FoodVariantsInput } from "../FoodVariantsInput";
 
 @InputType()
 export class RegisterFoodAndVariants {
-    @Field(type => FoodInput)
+    @Field(type => FoodInput, { name: 'food' })
     food: FoodInput
 
-    @Field(type => [FoodVariantsInput])
+    @Field(type => [FoodVariantsInput], { name: 'variants' })
     variants: FoodVariantsInput[]
 }

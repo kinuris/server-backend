@@ -3,6 +3,6 @@ import { FoodInput } from "../FoodInput";
 
 @InputType()
 export class deleteFoods {
-    @Field(type => [FoodInput])
+    @Field(type => [FoodInput], { name: 'foods' })
     foods: FoodInput[]
 }

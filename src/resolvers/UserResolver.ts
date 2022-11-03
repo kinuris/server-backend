@@ -6,7 +6,7 @@ import { User } from "../entity/User";
 
 @Resolver(User)
 export class UserResolver {
-    @Query(returns => Boolean)
+    @Query(returns => Boolean, { name: 'isAvailableUsername' })
     async isAvailableUsername(@Arg("username") username: string) {
         const user = await User.findOne({
             where: {
@@ -17,7 +17,7 @@ export class UserResolver {
         return user ? false : true
     }
 
-    @Query(returns => Boolean)
+    @Query(returns => Boolean, { name: 'isAvailableEmail' })
     async isAvailableEmail(@Arg("email") email: string) {
         const user = await User.findOne({
             where: {
@@ -28,7 +28,7 @@ export class UserResolver {
         return user ? false : true
     }
 
-    @Query(returns => User, { nullable: true })
+    @Query(returns => User, { nullable: true, name: 'getUserData' })
     async getUserData(@Ctx() context: Context<{ req: Request, res: Response }>) {
         const { req } = context
 

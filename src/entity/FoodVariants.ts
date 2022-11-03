@@ -5,17 +5,17 @@ import { Food } from "./Food"
 @ObjectType()
 @Entity({ name: "item_variants" })
 export class FoodVariants extends BaseEntity {
-    @Field(() => Food)
+    @Field(() => Food, { name: 'foodID' })
     @ManyToOne(() => Food, (food) => food.variants)
     @JoinColumn({ name: 'item_id' })
     @PrimaryColumn({ name: 'item_id', type: 'uuid' })
     foodID: Relation<Food>
 
-    @Field()
+    @Field({ name: 'variantName' })
     @PrimaryColumn({ name: 'variant_name' })
     variantName: string
 
-    @Field()
-    @Column()
+    @Field({ name: 'price' })
+    @Column({ name: 'price' })
     price: number
 }

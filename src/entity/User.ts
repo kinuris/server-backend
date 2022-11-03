@@ -4,29 +4,30 @@ import { ObjectType, Field, ID } from "type-graphql"
 @ObjectType()
 @Entity({ name: "users" })
 export class User extends BaseEntity {
-    @Field(() => ID)
+    @Field(() => ID, { name: 'userID' })
     @PrimaryGeneratedColumn("uuid", { name: "user_id" })
     userID: string
 
-    @Field()
-    @Column('text')
+    @Field({ name: 'email' })
+    @Column('text', { name: 'email' })
     email: string
 
-    @Field()
-    @Column('text')
+    @Field({ name: 'password' })
+    @Column('text', { name: 'password' })
     password: string
 
-    @Field()
+    @Field({ name: 'username' })
     @Column('varchar', {
-        length: 20
+        length: 20,
+        name: 'username'
     })
     username: string
 
-    @Field()
-    @Column('boolean')
+    @Field({ name: 'admin' })
+    @Column('boolean', { name: 'admin' })
     admin: boolean
 
-    @Field()
+    @Field({ name: 'profileImageLink' })
     @Column({ name: "profile_img_link" })
     profileImageLink: string
 }
