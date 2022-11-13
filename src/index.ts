@@ -86,17 +86,17 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, "sites", "index", "
 app.get('/:name/:directory_or_file?/:file?', 
 browserRouting("cookie-bite", {
     "/login": {
-        redirect: "/",
+        redirect: "/cookie-bite/",
         onFail: false,
         adminOnly: false
     },
     "/signup": {
-        redirect: "/",
+        redirect: "/cookie-bite/",
         onFail: false,
         adminOnly: false
     },
     "/manage-menu-items": {
-        redirect: "/",
+        redirect: "/cookie-bite/",
         onFail: true,
         adminOnly: true
     }
