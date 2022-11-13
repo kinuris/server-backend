@@ -18,6 +18,7 @@ import { UserResolver } from "./resolvers/UserResolver"
 import { FoodVariants } from "./entity/FoodVariants"
 import { FoodVariantsResolver } from "./resolvers/FoodVariantsResolver"
 import { login, signup } from "./custom_middleware/groups/auth"
+import { staticRouting } from "./custom_middleware/staticRouting"
 
 dotenv.config({ path: __dirname + "/.env" })
 
@@ -85,21 +86,22 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, "sites", "index", "
 app.get('/:name/:directory_or_file?/:file?', 
 browserRouting("cookie-bite", {
     "/login": {
-        redirect: "/cookie-bite/",
+        redirect: "/",
         onFail: false,
         adminOnly: false
     },
     "/signup": {
-        redirect: "/cookie-bite/",
+        redirect: "/",
         onFail: false,
         adminOnly: false
     },
     "/manage-menu-items": {
-        redirect: "/cookie-bite/",
+        redirect: "/",
         onFail: true,
         adminOnly: true
     }
 }),
+staticRouting("qwik-test"),
  ...ifNameOnly, (req, res) => {
     res.sendFile(path.join(__dirname, "sites", req.url))
 })
