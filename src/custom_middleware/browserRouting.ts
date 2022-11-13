@@ -10,6 +10,8 @@ export function browserRouting(name: string, routerOption: RouterOption = {}) {
             return
         }
 
+        req.body["should_browser_route"] = true
+
         if (req.params["directory_or_file"] && !req.params["file"] && `/${req.params["directory_or_file"]}` in routesAndRedirects) {
             const { redirect, onFail, adminOnly } = routesAndRedirects[`/${req.params["directory_or_file"]}`]
             
