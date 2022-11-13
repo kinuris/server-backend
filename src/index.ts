@@ -19,6 +19,7 @@ import { FoodVariants } from "./entity/FoodVariants"
 import { FoodVariantsResolver } from "./resolvers/FoodVariantsResolver"
 import { login, signup } from "./custom_middleware/groups/auth"
 import { staticRouting } from "./custom_middleware/staticRouting"
+import { routingConfig } from "./custom_middleware/groups/routingConfig"
 
 dotenv.config({ path: __dirname + "/.env" })
 
@@ -84,25 +85,8 @@ app.ws('/websocket/', (ws, req) => {
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, "sites", "index", "index.html")))
 
 app.get('/:name/:directory_or_file?/:file?', 
-browserRouting("cookie-bite", {
-    "/login": {
-        redirect: "/cookie-bite/",
-        onFail: false,
-        adminOnly: false
-    },
-    "/signup": {
-        redirect: "/cookie-bite/",
-        onFail: false,
-        adminOnly: false
-    },
-    "/manage-menu-items": {
-        redirect: "/cookie-bite/",
-        onFail: true,
-        adminOnly: true
-    }
-}),
-staticRouting("qwik-test"),
- ...ifNameOnly, (req, res) => {
+    ...routingConfig,
+    ...ifNameOnly, (req, res) => {
     res.sendFile(path.join(__dirname, "sites", req.url))
 })
 
